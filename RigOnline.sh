@@ -17,6 +17,7 @@ echo SEND RESTART TO RIGONLINE.RU ...
 wget -q -T 10 -O - "https://rigonline.ru/api/?email=$email&secret=$secret&rig=$rig&restart=y" --no-check-certificate || echo ERROR
 
 while true; do
+if [ -f "/tmp/miner-state.log" ]; then
 	CN="CN:$(ifconfig eth0| sed -n '2 {s/^.*inet addr:\([0-9.]*\) .*/\1/;p}'),"
 	C="C:$(cat /var/miner-info),"
 	LOGT="$(tail -n 1 /tmp/miner-state.log | sed s/\|/:/g)"
@@ -42,7 +43,7 @@ while true; do
 	echo SEND DATA TO RIGONLINE.RU ...
 
 	wget -q -T 10 -O - "https://rigonline.ru/api/?email=$email&secret=$secret&rig=$rig&gpu=$result" --no-check-certificate || echo ERROR
-
+fi
 	echo
 	echo PAUSE 120
 	sleep 120
