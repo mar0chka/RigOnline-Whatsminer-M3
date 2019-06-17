@@ -2,11 +2,11 @@
 Инструкция по установке:
 1. Регистрируемся на сайте [rigonline.ru](https://rigonline.ru/), записываем регистрационный e-mail и секретный ключ из профиля
 2. Заходим в асик по SSH. Подойдет любой клиент, например Putty.
-3. скачиваем скрипт в каталог /data:
+3. скачиваем скрипт в каталог /etc/init.d:
 ```bash
-cd /data
+cd /etc/init.d
 wget https://raw.githubusercontent.com/mar0chka/RigOnline-Whatsminer-M3/master/RigOnline.sh --no-check-certificate
-chmod +x RigOnline.sh
+chmod u+x RigOnline.sh
 ```
 4. Вставляем в скрипт регистрационные данные с сайта [rigonline.ru](https://rigonline.ru/)
 
@@ -24,20 +24,10 @@ vi RigOnline.sh
 ```
 Скрипт после 30 секунд ожидания должен начать отправлять данные на сервер, так же асик должен появится на сайте.
 
-6. Если все работает, прописываем скрипт в автозагрузку, для этого нужно отредактировать файл /etc/rc.local и вписать путь к скрипту перед строкой exit 0.
+6. Если все работает, прописываем скрипт в автозагрузку.
 ```bash
-vi /etc/rc.local
+ln -sf /etc/init.d/RigOnline.sh /etc/rc.d/S99rigonline.sh
 ```
-Редактируем аналогично файлу RigOnline.sh
-в итоге должно получится
-```bash
-# Put your custom commands here that should be executed once
-# the system init finished. By default this file does nothing.
-/data/RigOnline.sh &
-exit 0
-```
-Важно чтобы после пути к скрипту через пробел стоял символ &.
-Жмем Esc и прописываем `:wq`
 
 7. Перезагружаем асик
 ```bash
