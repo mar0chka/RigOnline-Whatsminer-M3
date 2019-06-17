@@ -20,7 +20,7 @@ while true; do
 if [ -f "/tmp/miner-state.log" ]; then
 	CN="CN:$(ifconfig eth0| sed -n '2 {s/^.*inet addr:\([0-9.]*\) .*/\1/;p}'),"
 	C="C:$(cat /var/miner-info),"
-	LOGT="$(tail -n 1 /tmp/miner-state.log | sed s/\|/:/g)"
+	LOGT="$(grep -v "Machine freq" /tmp/miner-state.log | tail -n 1 | sed s/\|/:/g)"
 	UT="UT:$(uptime | awk -F'( |,|:)+' '{if ($7=="min") m=$6; else {if ($7~/^day/) {d=$6;h=$8;m=$9} else {h=$6;m=$7}}} {OFS=":";print d+0,h+0,m+0,"00"}'),"
 	FAN_P=$(($(echo $LOGT | awk -F'(,|:)' '{if ($14<$15) {print $14} else {print $15}}')*100/6000))
 	M="M:$(echo $LOGT | awk -F'(,|:)' '{OFS=""; print "FanIn-",$15,"_FanOut-",$14,"_SM0-",$2,"_SM1-",$6,"_SM2-",$10}'),"
