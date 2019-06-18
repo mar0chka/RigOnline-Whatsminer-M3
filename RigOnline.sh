@@ -18,7 +18,7 @@ wget -q -T 10 -O - "https://rigonline.ru/api/?email=$email&secret=$secret&rig=$r
 
 while true; do
 if [ -f "/tmp/miner-state.log" ]; then
-	CN="CN:$(ifconfig eth0| sed -n '2 {s/^.*inet addr:\([0-9.]*\) .*/\1/;p}'),"
+	CN="CN:$(ifconfig eth0 | sed -n '2 {s/^.*inet addr:\([0-9.]*\) .*/\1/;p}'),"
 	C="C:$(cat /var/miner-info),"
 	LOGT="$(tail -n 50 /tmp/miner-state.log | grep -v "Machine freq" | tail -n 1 | sed s/\|/:/g)"
 	UT="UT:$(uptime | awk -F'( |,|:)+' '{if ($7=="min") m=$6; else {if ($7~/^day/) {d=$6;h=$8;m=$9} else {h=$6;m=$7}}} {OFS=":";print d+0,h+0,m+0,"00"}'),"
