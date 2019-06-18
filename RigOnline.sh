@@ -20,7 +20,7 @@ while true; do
 if [ -f "/tmp/miner-state.log" ]; then
 	CN="CN:$(ifconfig eth0| sed -n '2 {s/^.*inet addr:\([0-9.]*\) .*/\1/;p}'),"
 	C="C:$(cat /var/miner-info),"
-	LOGT="$(grep -v "Machine freq" /tmp/miner-state.log | tail -n 1 | sed s/\|/:/g)"
+	LOGT="$(tail -n 50 /tmp/miner-state.log | grep -v "Machine freq" | tail -n 1 | sed s/\|/:/g)"
 	UT="UT:$(uptime | awk -F'( |,|:)+' '{if ($7=="min") m=$6; else {if ($7~/^day/) {d=$6;h=$8;m=$9} else {h=$6;m=$7}}} {OFS=":";print d+0,h+0,m+0,"00"}'),"
 	FAN_P=$(($(echo $LOGT | awk -F'(,|:)' '{if ($14<$15) {print $14} else {print $15}}')*100/6000))
 	M="M:$(echo $LOGT | awk -F'(,|:)' '{OFS=""; print "FanIn-",$15,"_FanOut-",$14,"_SM0-",$2,"_SM1-",$6,"_SM2-",$10}'),"
@@ -32,7 +32,7 @@ if [ -f "/tmp/miner-state.log" ]; then
 		",a1:C:C:",$7,",a1:C:L:",$6,"-GHS,a1:C:T:",$9,",a1:M:C:",$8,\
 		",a2:C:C:",$11,",a2:C:L:",$10,"-GHS,a2:C:T:",$13,",a2:M:C:",$12,\
 		","}')"
-	HR_AVG="$(tail -n 50 /tmp/miner-state.log | sed s/\|/:/g | awk -F'(,|:)' 'BEGIN { coun=0; sum=0 } { coun++; sum+=$2+$6+$10 } END { print sum/coun }')"
+	HR_AVG="$(tail -n 50 /tmp/miner-state.log | grep -v "Machine freq" | sed s/\|/:/g | awk -F'(,|:)' 'BEGIN { coun=0; sum=0 } { coun++; sum+=$2+$6+$10 } END { print sum/coun }')"
 	HR_RP="$(echo $LOGT | awk -F'(,|:)' '{print $2+$6+$10}')"
 	HR="H1:btc_ghs_${HR_RP}_-_${HR_AVG}"
 	result=$CPU$CN$UT$C$M$DEVICE$SM$FAN$HR
